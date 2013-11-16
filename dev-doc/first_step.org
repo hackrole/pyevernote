@@ -1,0 +1,88 @@
+#+Author: hackrole
+#+Email: daipeng123456@gmail.com
+#+Date: 2013-11-14
+
+hi:
+
+我已建立了一个evernote测试帐号，用于开发测试
+项目结构也做了相应的调整。如有疑问可以联系我。
+
+
+第一步要实现的功能计划如下:
+
++ 一个功能一个命令,一个命令一个文件，调用方式:
+   python 文件名 参数表 
+
++ 所有命令从settings.py中引入 evernotetoken
++ 所有的测试用例写到 tests 包中
++ 项目中可能使用到的python类库
+   optparse
+   evernote(python类库)
+   unittest
++ 所有命令需要支持的功能选项由开发过程中自行决定，我们随后在做考虑.
+
+
+pyevernote客户端使用方式，可以看作用户故事, 下面两个是例子, 先实现这个，第一步完成后我们在考虑把代码坐下整合和架构:
+
+1>
+usage:
+  python showtags <options>
+	-h   "show this help message"
+	-v	"show the pyevernote version(1.0 now)"
+
+2>
+usage:
+	python createnote -f files <options>
+or
+	python createnote -d directory <options>
+		-h	"show this help message"
+		-v	"show the pyevernote version(1.0 now)"
+		-f file		"the file to post"
+		-d	directory	"the directory to post all its fils match the re"
+		-r re	"正则表达式，用于与-d一起使用，若不指定则发布目录下所有文件，若制定则只发布文件名匹配正则的文件"
+		-N num	"发布到那个notebook中,不制定发布到默认比较本中，不制定须给用户一个提醒，确认后继续操作"
+		其他可以自己根据需要加进去, 我们先
+
+
+* showtags
+列出所有的tag信息
+
+* shownotebook
+列出所有的notebook信息
+
+* shownote
+根据notebookid显示notebook下的所有note, 不传折列出所有notebook,并列出其下的note
+
+* createnotebook
+创建笔记本
+
+* createnote
+从文件的前几行提取出,分类，标题,tags，notebooks等信息，将整个文件内容存入笔记
+这样的处理可以考虑批量发布一个目录下笔记
+
+example:
+#+TITLE: hello
+#+CATEGORY: test_note
+#+TAGS: test:note:hello
+#+NOTEBOOKS: (nootbook_id)
+
+content
+
+* deletenote
+通过传入noteid,删除对应id笔记, 要求确认输入笔记title, 才能进一步操作
+批量删除多个的也可以考虑实现，不过要一个个确认
+
+* deletenotebook
+通过传入notebookid,删除对应id笔记, 列出笔记本下所有笔记的相应信息，一行一个，要求输入笔记本名才能进一步操作
+
+* renamenotebook
+通过shownotebook查询到notebookid, 然后调用此命令，传入id,重命名笔记本
+
+* renamenote
+通过shownote查询到noteid, 然后调用此命令，重命名笔记, 开发阶段可以用固有nid测试
+
+* searchnote
+通过一个关键词，展示搜索结果,展示结果可以尽可能包含一些有用的信息
+
+* searchtags
+通过一个关键词，展示搜索结果，展示结果可以尽可能包含一些有用的信息
