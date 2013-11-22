@@ -7,10 +7,16 @@ from evernote.edam.notestore import ttypes
 from settings import TOKEN
 
 
-def shownotebook():
+def shownote():
+    client = EvernoteClient(token=TOKEN)
+    noteStore = client.get_note_store()
+
     notefilter = ttypes.NoteFilter()
-    pass
+    offset = 0
+    limit = 200
+    notelist  =  noteStore.findNotes(notefilter, offset, limit)
+    print notelist
 
 
 if __name__ == '__main__':
-    shownotebook()
+    shownote()
