@@ -1,12 +1,22 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+import settings
 from evernote.api.client import EvernoteClient
-from setings import TOKEN
 
 
 def showtags():
-    pass
+    client = EvernoteClient(token=settings.TOKEN)
+    notestore = client.get_note_store()
+
+    tag_list = notestore.listTags()
+
+    for tag in tag_list:
+        print '=============='
+        print tag.guid
+        print tag.name
+        print tag.parentGuid
+        print tag.updateSequenceNum
 
 
 if __name__ == '__main__':
