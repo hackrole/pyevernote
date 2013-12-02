@@ -28,3 +28,4 @@ def delete_note():
     except error_ttypes.EDAMUserException,e:
         print "you have no permission to delete the note(guid:)" % (note_guid,)
     print "note(guid: %s) has been move to trash" % (note_guid,)
+    
