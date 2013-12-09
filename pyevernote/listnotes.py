@@ -4,21 +4,15 @@
 import settings
 import sys
 import time
-from optparse import OptionParser, OptionError
+from optparse import OptionParser, OptionError, OptParseError
 from evernote.api.client import EvernoteClient
 from evernote.edam.notestore import ttypes
 
 
 def listnotes_options():
     parser = OptionParser()
-    parser.add_option("-B", "--nbg", dest="nbg",
-                      help="set the notebook guid to list",
-                      metavar="NoteBookGuid")
     parser.add_option("-b", "--nbn", dest="nbn",
                       help="set the notebook name to list, cover the --nbg")
-    parser.add_option("-T", "--tg", dest="tg",
-                      help="set the tag guid to list",
-                      metavar="TagGuid")
     parser.add_option("-t", "--tn", dest="tn",
                       help="set the tag name to list, cover the --tn",
                       metavar="TagName")
@@ -31,12 +25,11 @@ def listnotes_options():
     return parser.parse_args()
 
 def check_options(options):
-    if not (options.nbg or options.nbn or options.tg or options.tn):
-        raise OptionError("must give an contidion, use -h for detail")
+    if not options.nbn and not options.tn:
+        print "must set the notebook name or tagname, use -h for detail"
+        sys.exit(-1)
+        # raise OptionError("must set the notebook name or tagname, use -h for detail", "listnotes")
 
-def get_note_filter(options):
-    if options.nbn:
-        pass
 
 def listnotes():
     # the option parser
@@ -46,14 +39,30 @@ def listnotes():
     client = EvernoteClient(token=settings.TOKEN)
     notestore = client.get_note_store()
 
-    # get the notes total count
+    # get the notebook guid if give the notebook name
     note_filter = ttypes.NoteFilter()
-    note_filter.notebookGuid = args[0]
+    if options.nbn:
+        notebooks = notestore.listNotebooks()
+        for notebook in notebooks:
+            if notebook.name.lower() == options.nbn.lower():
+                nbg = notebook.guid
+                print nbg
+                note_filter.notebookGuid = nbg
+    # get the tags guid if give the tag list
+    if options.tn:
+        tags = notestore.listTags()
+        tgs = []
+        for tag in tags:
+            if lower(tag.name) in options.tn:
+                tgs.append(tag.guid)
+        if tgs:
+            note_filter.tagGuids = tgs
+
     note_collections_count = notestore.findNoteCounts(note_filter, True)
     try:
         note_count = sum(note_collections_count.notebookCounts.values())
     except Exception,e:
-        print "the notebooks %s has no notes now" % (args[0])
+        print "no notes found"
         sys.exit(-1)
     print '=========='
     print "find %s notes" % (note_count)
