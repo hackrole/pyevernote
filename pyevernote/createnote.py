@@ -5,16 +5,16 @@ import settings
 import re
 from optparse import OptionParser, OptionValueError
 from evernote.api.client import EvernoteClient
-from evernote.edam.noteStore import ttypes
+from evernote.edam.notestore import ttypes
 
 
 def parser_file_attr(f):
     f = open(f)
     text = '\n'.join([f.readline() for i in range(10)])
     f.close()
-    title = re.findall("^#+NOTE_TITLE:(\w+)\n$", text)
-    notebook_name = re.findall("^#+NOTEBOOK_TITLE:(\w+)\n$", text)
-    tags = re.findall("^#+NOTEBOOK_GUID:([:\w]+)$", text)
+    title = re.findall("^#+NOTE_TITLE: (\w+)\n$", text)
+    notebook_name = re.findall("^#+NOTEBOOK_TITLE: (\w+)\n$", text)
+    tags = re.findall("^#+NOTEBOOK_TAGS: ([:\w]+)$", text)
     return (title, notebook_name, tags)
 
 
@@ -25,7 +25,7 @@ def create_note():
     parser.add_option("-n", "--title", dest="note_title",
                           help="set the note title", metavar="TITLE")
     # TODO: options list
-    parser.add_option("-t", "--tag", dest="note_tags", action="append"
+    parser.add_option("-t", "--tag", dest="note_tags", action="append",
                       help="set the note tag name", metavar="tags_name")
     parser.add_option("-b", "--notebook", dest="notebook_name",
                       help="set the notebook", metavar="notebook_name")
@@ -34,7 +34,7 @@ def create_note():
     if len(args) != 1:
         raise OptionValueError("must give the filename to create the note")
     title, notebook_name, tags = parser_file_attr(args[0])
-    if options.note_title
+    if options.note_title:
         title = options.note_title
     if options.note_tags:
         tags = options.note_tags
@@ -56,3 +56,7 @@ def create_note():
         print "notebook %s not found" % (notbook)
     print "======= create note from file %s success =========" % (filename,)
     print create_note.guid
+
+
+if __name__ == "__main__":
+    create_note()

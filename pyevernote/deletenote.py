@@ -2,6 +2,7 @@
 #coding=utf-8
 
 import settings
+from optparse import OptionParser, OptionValueError
 from evernote.api.client import EvernoteClient
 from evernote.edam.notestore import ttypes
 from evernote.edam.error import ttypes as error_ttypes
@@ -13,7 +14,7 @@ def delete_note():
     (options, args) = parser.parse_args()
 
     if len(args) != 1:
-        raise OptionParser("must give the note_guid.")
+        raise OptionValueError("must give the note_guid.")
 
     client = EvernoteClient(token=settings.TOKEN)
     noteStore = client.get_note_store()
@@ -28,4 +29,7 @@ def delete_note():
     except error_ttypes.EDAMUserException,e:
         print "you have no permission to delete the note(guid:)" % (note_guid,)
     print "note(guid: %s) has been move to trash" % (note_guid,)
-    
+
+
+if __name__ == "__main__":
+    delete_note()

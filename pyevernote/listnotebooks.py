@@ -5,6 +5,7 @@ import settings
 import ConfigParser
 import string
 import time
+from utils import json_data_print_totable
 from evernote.api.client import EvernoteClient
 from evernote.edam.notestore import ttypes
 
@@ -15,11 +16,14 @@ def listnotebooks():
 
     notebook_list = notestore.listNotebooks()
 
-    print string.ljust("notebook_guid", 50), string.ljust("notebook_name", 30), string.ljust("notebook_create_time", 12)
-    print '-' * 100
-    for notebook in notebook_list:
-        create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(notebook.serviceCreated/1000))
-        print string.ljust(`notebook.guid`, 50), string.ljust(`notebook.name`, 30), string.ljust(create_time, 12)
+    thead = ["notebook_guid", "notebook_name", "create_time"]
+    data = [{'notebook_guid': notebook.guid, 'notebook_name': notebook.name,
+             'create_time': time.strftime("%Y-%m-%d", time.gmtime(notebook.serviceCreated/1000))}
+             for notebook in notebook_list]
+    title = "notebook list"
+
+    # json print
+    json_data_print_totable(thead, data, title)
 
 
 if __name__ == '__main__':

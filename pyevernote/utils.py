@@ -4,32 +4,44 @@
 import string
 
 
-def data_print(data, title="no title", d="=", dd='-'):
+def json_data_print_totable(thead, data, title="no title", d="=", dd='-'):
     """ print the data list with table style """
-    kl = data[0].keys()
-    c, l = max_length_list(data, kl)
-    dn = (c - len(title) - 4) / 2
+    c, dl = _max_table_length(thead, data)
 
-    print d*dn,title,d*dn
-    print ''.join([string.center(k, l[i]) for i, k in enumerate(kl)])
+    cl = (c - len(title) - 4) / 2
+    # TODO print to sys.stdout.write
+    print d*cl,title,d*cl
+    print ''.join([string.ljust(h, dl[h]) for h in thead])
     print dd*c
     for d in data:
-        print ''.join([string.ljust(getattr(d, k), l[i]) for i, k in enumerate(kl)])
+        print ''.join([string.ljust(str(d.get(h)), dl[h]) for h in thead])
 
 
-def max_length_list(lt, kl):
-    """ return a max_length attrs of a object list and the max_length sum"""
-    l = [max_length(lt, k) for k in kl]
-    c = sum(l)
-    return (c, l)
+def _max_table_length(thead, data):
+    """ return lenght info about a table list """
+    dl = {}
+    for h in thead:
+        tmp = [str(d.get(h)) for d in data]
+        tmp.append(h)
+        dl[h] = _max_length(tmp)
+
+    c = sum(dl.values())
+    return (c, dl)
 
 
-def max_length(l, k, s=4):
-    """ return object from an object list which has the most length of the attr """
-    return len(getattr(max(l, key=lambda x: len(x.get(k))), k))+s
+def _max_length(l, space=4):
+    """ return length of the max length in a list add with a space """
+    def len2(s):
+        if s is None:
+            return 0
+        return len(s)
+    return len(max(l, key=len2)) + space
+
+
 
 if __name__ == '__main__':
     l = []
+    th = ['title', 'guid', 'content', 'create_time', 'update_time']
     for i in range(5):
         o = {}
         o['title'] = "time"
@@ -39,4 +51,4 @@ if __name__ == '__main__':
         o['update_time'] = '2013/12/11'
         l.append(o)
 
-    data_print(l, title="test for print")
+    json_data_print_totable(th, l, title="test for print")
