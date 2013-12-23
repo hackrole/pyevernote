@@ -2,6 +2,15 @@
 #coding=utf8
 
 import string
+import settings
+from evernote.api.client import EvernoteClient
+
+
+def get_note_store(token):
+    """ 传入evernote token,返回evenote notestore """
+    client = EvernoteClient(token=settings.TOKEN)
+    notestore = client.get_note_store()
+    return notestore
 
 
 def json_data_print_totable(thead, data, title="no title", d="=", dd='-'):
