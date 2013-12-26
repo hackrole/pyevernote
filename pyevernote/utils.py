@@ -6,9 +6,9 @@ import settings
 from evernote.api.client import EvernoteClient
 
 
-def get_note_store(token):
+def get_notestore(token):
     """ 传入evernote token,返回evenote notestore """
-    client = EvernoteClient(token=settings.TOKEN)
+    client = EvernoteClient(token=token)
     notestore = client.get_note_store()
     return notestore
 
