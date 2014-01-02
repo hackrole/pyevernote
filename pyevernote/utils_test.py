@@ -7,7 +7,6 @@ import utils
 import settings
 from evernote.api.client import Store
 from evernote.edam.error import ttypes as error_ttypes
-from evernote.edam.type import ttypes as ty_ttypes
 
 
 # TODO define new exception
@@ -29,10 +28,11 @@ class ListNotebooksTestCase(unittest.TestCase):
     def setUp(self):
         # mock the notestore for data init
         self.ns = mock.MagicMock()
-        self.ns.listNotebooks.return_value = self.listnotebooks_mock()
-
-    def listnotebooks_mock(self):
-        pass
+        self.ns.return_value = ''
 
     def test_list_notebooks(self):
         notebook_list, thead_list, title = listnotebooks(self.ns)
+
+
+if __name__ == '__main__':
+    unittest.main()
