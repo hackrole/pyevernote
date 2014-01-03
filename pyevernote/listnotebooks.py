@@ -22,6 +22,6 @@ if __name__ == '__main__':
     import utils
     import settings
 
-    notestore = utils.get_note_store(settings.TOKEN)
+    notestore = utils.get_notestore(settings.TOKEN)
     thead, data, title = listnotebooks(notestore)
     utils.json_data_print_totable(thead, data, title)
